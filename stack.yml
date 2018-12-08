@@ -5,4 +5,4 @@ functions:
   pycho:
     lang: python3-flask
     handler: ./pycho
-    image: pycho:latest
+    image: theaxer/pycho:latest
