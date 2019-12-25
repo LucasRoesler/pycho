@@ -5,7 +5,7 @@ the request body is logged to stdout.
 
 The goal is that these should be really easy to deploy and verify a deployment of OpenFaaS.
 
-The Quart based function also provides an example of a Python function using `async/await`.
+The [Quart](https://pgjones.gitlab.io/quart/) based function also provides an example of a Python function using `async/await`.
 
 
 ## Deploying
@@ -15,7 +15,7 @@ The Flask based echo function can be deployed using
 faas-cli deploy --name pycho --image theaxer/pycho:latest --fprocess='python index.py'
 ```
 
-The Quart based echo function can similarly be deployed using
+The [Quart](https://pgjones.gitlab.io/quart/) based echo function can similarly be deployed using
 ```sh
 faas-cli deploy --name pycho-async --image theaxer/pycho-async:latest --fprocess='python index.py'
 ```
