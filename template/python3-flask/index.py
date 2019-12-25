@@ -1,21 +1,36 @@
-# Copyright (c) Alex Ellis 2017. All rights reserved.
-# Licensed under the MIT license. See LICENSE file in the project root for full license information.
+import logging
+import sys
 
 from flask import Flask, request
+from flask.logging import default_handler
+
 from function import handler
-#from gevent.wsgi import WSGIServer
-from gevent.pywsgi import WSGIServer
 
 app = Flask(__name__)
 
-@app.route("/", defaults={"path": ""}, methods=["POST", "GET"])
-@app.route("/<path:path>", methods=["POST", "GET"])
+logging.basicConfig(
+    stream=sys.stdout,
+    format="%(asctime)s:%(levelname)s:%(message)s",
+    level=logging.DEBUG,
+)
+
+app = Flask(__name__)
+app.logger.removeHandler(default_handler)
+
+
+@app.route(
+    "/", defaults={"path": ""}, methods=["GET", "PUT", "POST", "PATCH", "DELETE"]
+)
+@app.route("/<path:path>", methods=["GET", "PUT", "POST", "PATCH", "DELETE"])
 def main_route(path):
-    ret = handler.handle(request.get_data())
+    ret = handler.handle(request.get_data(), request)
     return ret
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False)
 
-    # http_server = WSGIServer(('', 5000), app)
-    # http_server.serve_forever()
+@app.route("/_/health", methods=["GET"])
+def healthcheck(path):
+    return "ok"
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=False)
