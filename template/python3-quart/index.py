@@ -1,8 +1,8 @@
 import logging
 import sys
 
-from flask import Flask, request
-from flask.logging import default_handler
+from quart import Quart, request
+from quart.logging import default_handler
 
 from function import handler
 
@@ -12,7 +12,8 @@ logging.basicConfig(
     level=logging.DEBUG,
 )
 
-app = Flask(__name__)
+
+app = Quart(__name__)
 app.logger.removeHandler(default_handler)
 
 
@@ -20,14 +21,10 @@ app.logger.removeHandler(default_handler)
     "/", defaults={"path": ""}, methods=["GET", "PUT", "POST", "PATCH", "DELETE"]
 )
 @app.route("/<path:path>", methods=["GET", "PUT", "POST", "PATCH", "DELETE"])
-def main_route(path):
-    ret = handler.handle(request.get_data(), request)
+async def main_route(path):
+    payload = await request.get_data()
+    ret = await handler.handle(payload, request)
     return ret
-
-
-@app.route("/_/health", methods=["GET"])
-def healthcheck(path):
-    return "ok"
 
 
 if __name__ == "__main__":
